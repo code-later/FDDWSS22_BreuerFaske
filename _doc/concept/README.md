@@ -59,11 +59,11 @@ Ende erhält jede Spielende Punkte entsprechend ihrer Platzierung.
 
 ### Domänenmodell
 
-...
+![Domänenmodell](Domaenenmodell.png)
 
 ### Mögliche Entitäten
 
-...
+![Mögliche Entitäten](Entitaeten.png)
 
 ### Wesentliche Events
 
@@ -84,4 +84,4 @@ Ende erhält jede Spielende Punkte entsprechend ihrer Platzierung.
 
 ### Kommunikationsmodell
 
-...
+![Kommunikationsmodell](Kommunikationsmodell.png)
