@@ -4,6 +4,8 @@ GEM
     haml (5.2.2)
       temple (>= 0.8.0)
       tilt
+    kramdown (2.4.0)
+      rexml
     multi_json (1.15.0)
     mustermann (1.1.1)
       ruby2_keywords (~> 0.0.1)
@@ -13,6 +15,7 @@ GEM
     rack (2.2.3.1)
     rack-protection (2.2.0)
       rack
+    rexml (3.2.5)
     ruby2_keywords (0.0.5)
     sinatra (2.2.0)
       mustermann (~> 1.0)
@@ -33,6 +36,7 @@ PLATFORMS
 
 DEPENDENCIES
   haml
+  kramdown
   puma
   sinatra
   sinatra-contrib
