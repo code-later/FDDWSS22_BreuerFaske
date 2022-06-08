@@ -2,6 +2,6 @@
 
 case $SERVICE in
   web)
-    bundle exec ruby app.rb -p 3000 -o 0.0.0.0
+    bundle exec ruby app.rb -p 3000 -o $BINDING
     ;;
 esac
