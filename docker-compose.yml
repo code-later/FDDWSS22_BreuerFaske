@@ -17,5 +17,20 @@ services:
     ports:
       - "3000:3000"
 
+  auth_service:
+    stdin_open: true
+    tty: true
+    user: "${USER_MAPPING:-app:app}"
+    build:
+      context: auth_service
+      args:
+        service: web
+    volumes:
+    - ./auth_service:/app
+    - node_modules:/app/node_modues
+    ports:
+      - "3001:8080"
+
 volumes:
   bundle:
+  node_modules:
