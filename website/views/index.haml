@@ -9,8 +9,10 @@
       margin:auto;
       color:#333;
       font-size:1.2em;
-      font-family: sans-serif;
+      font-family:sans-serif;
     }
+
+  %script{ type: "text/javascript", src: "application.js", defer: true, type: "module" }
 
   %body
     %h1= "Mau-Mau Online"
@@ -25,4 +27,5 @@
       Nutzer:innen können an beliebig vielen unterschiedlichen Spielen gleichzeitig
       teilnehmen.
 
-    %a(title="Sign up" href="http://localhost:3001") Zum Sign Up
+    %embed-link
+      %a{ title: "Sign up", href: "http://localhost:3001" } Zum Sign Up
