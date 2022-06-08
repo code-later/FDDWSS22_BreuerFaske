@@ -1,0 +1,7 @@
+#!/usr/bin/env sh
+
+case $SERVICE in
+  web)
+    npm start
+    ;;
+esac

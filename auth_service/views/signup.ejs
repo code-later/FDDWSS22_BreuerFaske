@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Authentication Service</title>
+    <style>
+     html {
+       max-width:70ch;
+       padding:2ch;
+       margin:auto;
+       color:#333;
+       font-size:1.2em;
+       font-family: serif;
+     }
+    </style>
+  </head>
+  <body>
+
+    <h1>Registrieren</h1>
+
+    <form method="post" action="/signup">
+      <p>
+        <label for="username">E-Mail</label>
+        <input type="text" name="email" id="email">
+      </p>
+      <p>
+        <label for="password">Passwort</label>
+        <input type="password" name="password" id="password">
+      </p>
+      <p>
+        <input type="submit" value="Registrieren">
+      </p>
+    </form>
+
+    <footer>
+      Copyright &#169; <%= new Date().getFullYear() %> by <a href="https://github.com/code-later">code-later</a>
+    </footer>
+  </body>
+</html>
