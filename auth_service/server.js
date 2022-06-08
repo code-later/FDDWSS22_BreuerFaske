@@ -1,6 +1,7 @@
 'use strict';
 
 const express = require('express');
+const cors = require('cors');
 const path = require('path');
 
 // Constants
@@ -9,6 +10,9 @@ const HOST = process.env.BINDING;
 
 // App
 var app = module.exports = express();
+
+// Enable CORS for localhost origins
+app.use(cors({ origin: /localhost/, credentials: true }));
 
 // Config
 app.set('view engine', 'ejs');
