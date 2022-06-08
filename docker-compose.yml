@@ -1,0 +1,21 @@
+version: "3.9"
+services:
+  website:
+    environment:
+      EDITOR: vim
+      RACK_ENV: development
+    stdin_open: true
+    tty: true
+    user: "${USER_MAPPING:-app:app}"
+    build:
+      context: website
+      args:
+        service: web
+    volumes:
+    - ./website:/app
+    - bundle:/bundle
+    ports:
+      - "3000:3000"
+
+volumes:
+  bundle:
