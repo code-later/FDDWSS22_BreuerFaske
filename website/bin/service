@@ -1,0 +1,7 @@
+#!/usr/bin/env sh
+
+case $SERVICE in
+  web)
+    bundle exec ruby app.rb -p 3000 -o 0.0.0.0
+    ;;
+esac
