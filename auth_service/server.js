@@ -1,8 +1,12 @@
 'use strict';
 
 const express = require('express');
+const Redis = require("ioredis");
 const cors = require('cors');
 const path = require('path');
+
+// Connect to Redis with REDIS_URL from ENV
+const redis = new Redis(process.env.REDIS_URL);
 
 // Constants
 const PORT = 8080;
