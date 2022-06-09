@@ -2,6 +2,7 @@
 %html{ lang: :de }
   %head
     %title= "Mau-Mau Online"
+
   :css
     html {
       max-width:70ch;
@@ -12,6 +13,7 @@
       font-family:sans-serif;
     }
 
+  %script{ type: "text/javascript", src: "https://cdn.skypack.dev/@hotwired/turbo", defer: true, type: "module" }
   %script{ type: "text/javascript", src: "application.js", defer: true, type: "module" }
 
   %body
