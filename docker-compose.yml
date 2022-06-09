@@ -1,5 +1,15 @@
 version: "3.9"
 services:
+  reverse_proxy:
+    image: nginx:latest
+    depends_on:
+      - website
+      - auth_service
+    ports:
+      - 80:80
+    volumes:
+      - ./_config/reverse_proxy.conf:/etc/nginx/conf.d/default.conf
+
   website:
     environment:
       EDITOR: vim
@@ -14,8 +24,6 @@ services:
     volumes:
       - ./website:/app
       - bundle:/bundle
-    ports:
-      - "3000:3000"
 
   auth_service:
     environment:
@@ -32,8 +40,6 @@ services:
     volumes:
       - ./auth_service:/app
       - node_modules:/app/node_modues
-    ports:
-      - "3001:8080"
 
   auth_service_db:
     image: redis

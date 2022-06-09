@@ -26,7 +26,7 @@ app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
 app.get('/', (req, res) => {
-  res.redirect('/signup');
+  res.redirect('/auth/signup');
 });
 
 app.get('/signup', function(req, res){
@@ -39,7 +39,7 @@ app.post('/signup', function(req, res){
 
   redis.set(email, password); // NEVER store plain text passwords!
 
-  res.redirect('/login');
+  res.redirect('/auth/login');
 });
 
 app.get('/login', function(req, res){
