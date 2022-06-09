@@ -12,24 +12,34 @@ services:
       args:
         service: web
     volumes:
-    - ./website:/app
-    - bundle:/bundle
+      - ./website:/app
+      - bundle:/bundle
     ports:
       - "3000:3000"
 
   auth_service:
+    environment:
+      REDIS_URL: redis://:supersecretpassword@auth_service_db:6379
     stdin_open: true
     tty: true
     user: "${USER_MAPPING:-app:app}"
+    depends_on:
+      - auth_service_db
     build:
       context: auth_service
       args:
         service: web
     volumes:
-    - ./auth_service:/app
-    - node_modules:/app/node_modues
+      - ./auth_service:/app
+      - node_modules:/app/node_modues
     ports:
       - "3001:8080"
+
+  auth_service_db:
+    image: redis
+    command: ["redis-server", "/etc/redis/redis.conf"]
+    volumes:
+      - ./_config/auth_service.redis.conf:/etc/redis/redis.conf
 
 volumes:
   bundle:
