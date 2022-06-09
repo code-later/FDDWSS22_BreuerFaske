@@ -18,6 +18,9 @@ var app = module.exports = express();
 // Enable CORS for localhost origins
 app.use(cors({ origin: /localhost/, credentials: true }));
 
+// Read form data
+app.use(express.urlencoded({ extended: false }));
+
 // Config
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
@@ -31,7 +34,34 @@ app.get('/signup', function(req, res){
 });
 
 app.post('/signup', function(req, res){
-  res.send('Herzlich Willkommen und viel Freude!');
+  const email = req.body.email;
+  const password = req.body.password;
+
+  redis.set(email, password); // NEVER store plain text passwords!
+
+  res.redirect('/login');
+});
+
+app.get('/login', function(req, res){
+  res.render('login');
+});
+
+app.post('/login', function(req, res){
+  const email = req.body.email;
+  const password = req.body.password;
+
+  redis.get(email, (err, result) => {
+    if (err) {
+      res.send('Das hat nicht geklappt.');
+    } else {
+
+      if (result === password) {
+        res.send(`Herzlich Willkommen "${email}" und viel Freude!`);
+      } else {
+        res.send('Das hat nicht geklappt.');
+      }
+    }
+  });
 });
 
 app.listen(PORT, HOST);
