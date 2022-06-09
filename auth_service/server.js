@@ -52,13 +52,13 @@ app.post('/login', function(req, res){
 
   redis.get(email, (err, result) => {
     if (err) {
-      res.send('Das hat nicht geklappt.');
+      res.render('failed');
     } else {
 
       if (result === password) {
-        res.send(`Herzlich Willkommen "${email}" und viel Freude!`);
+        res.render('welcome', { email: email });
       } else {
-        res.send('Das hat nicht geklappt.');
+        res.render('failed');
       }
     }
   });
