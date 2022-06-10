@@ -39,7 +39,7 @@ services:
         service: web
     volumes:
       - ./auth_service:/app
-      - node_modules:/app/node_modues
+      - node_modules:/app/node_modules
 
   auth_service_db:
     image: redis
