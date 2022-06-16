@@ -5,6 +5,7 @@ services:
     depends_on:
       - website
       - auth_service
+      - game_service
     ports:
       - 80:80
     volumes:
@@ -23,7 +24,37 @@ services:
         service: web
     volumes:
       - ./website:/app
-      - bundle:/bundle
+      - bundle_website:/bundle
+
+  game_service:
+    environment:
+      EDITOR: vim
+      RAILS_ENV: development
+      RAILS_RELATIVE_URL_ROOT: /game
+      DATABASE_URL: ${DATABASE_URL:-postgres://postgres:secretsecretsecret@game-service-db/game_service}
+      TEST_DATABASE_URL: ${TEST_DATABASE_URL:-postgres://postgres:secretsecretsecret@game-service-db/game_service_test}
+    stdin_open: true
+    tty: true
+    depends_on:
+    - game-service-db
+    user: "${USER_MAPPING:-app:app}"
+    build:
+      context: game_service
+      args:
+        service: web
+    volumes:
+      - ./game_service:/app
+      - bundle_game_service:/bundle
+
+  # Alias required since underscores are not allowed in DATABASE_URL. See: https://stackoverflow.com/a/64344976
+  game-service-db:
+    image: postgres:latest
+    volumes:
+    - game_service_db:/var/lib/postgresql/data
+    ports:
+    - "5432:5432"
+    environment:
+    - POSTGRES_PASSWORD=secretsecretsecret
 
   auth_service:
     environment:
@@ -48,5 +79,7 @@ services:
       - ./_config/auth_service.redis.conf:/etc/redis/redis.conf
 
 volumes:
-  bundle:
+  bundle_website:
+  bundle_game_service:
+  game_service_db:
   node_modules:
