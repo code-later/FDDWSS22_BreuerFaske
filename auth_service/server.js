@@ -4,6 +4,7 @@ const express = require('express');
 const Redis = require("ioredis");
 const path = require('path');
 const bcrypt = require("bcrypt");
+const cookieParser = require('cookie-parser');
 
 // Connect to Redis with REDIS_URL from ENV
 const redis = new Redis(process.env.REDIS_URL);
@@ -14,6 +15,9 @@ const HOST = process.env.BINDING;
 
 // App
 var app = module.exports = express();
+
+// Enable usage of Cookies
+app.use(cookieParser());
 
 // Parse requests of content-type - application/json
 app.use(express.json());
@@ -62,6 +66,7 @@ app.post('/login', function(req, res){
     } else {
 
       if (bcrypt.compareSync(given_password, password)) {
+        res.cookie('_mau_mau_auth_JWT', 'auth_information');
         res.render('welcome', { email: email });
       } else {
         res.render('error');
