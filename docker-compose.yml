@@ -48,17 +48,18 @@ services:
 
   # Alias required since underscores are not allowed in DATABASE_URL. See: https://stackoverflow.com/a/64344976
   game-service-db:
+    environment:
+      POSTGRES_PASSWORD: secretsecretsecret
     image: postgres:latest
     volumes:
-    - game_service_db:/var/lib/postgresql/data
+      - game_service_db:/var/lib/postgresql/data
     ports:
-    - "5432:5432"
-    environment:
-    - POSTGRES_PASSWORD=secretsecretsecret
+      - "5432:5432"
 
   auth_service:
     environment:
       REDIS_URL: redis://:supersecretpassword@auth_service_db:6379
+      JWT_SECRET: aen7ieCahc9eC9aequ7eib4ogei4Afei
     stdin_open: true
     tty: true
     user: "${USER_MAPPING:-app:app}"

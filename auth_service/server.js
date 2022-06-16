@@ -5,6 +5,7 @@ const Redis = require("ioredis");
 const path = require('path');
 const bcrypt = require("bcrypt");
 const cookieParser = require('cookie-parser');
+const jwt = require("jsonwebtoken");
 
 // Connect to Redis with REDIS_URL from ENV
 const redis = new Redis(process.env.REDIS_URL);
@@ -29,8 +30,33 @@ app.use(express.urlencoded({ extended: false }));
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
-app.get('/', (req, res) => {
-  res.redirect('/auth/signup');
+const verifyToken = (req, res, next) => {
+  if (req.cookies && req.cookies._mau_mau_auth_JWT) {
+    jwt.verify(req.cookies._mau_mau_auth_JWT, process.env.JWT_SECRET, function (err, decode) {
+      if (err) req.user = undefined;
+
+      redis.exists(decode.email, (err, result) => {
+        if (err || result === 1) {
+          req.user = decode.email;
+          next();
+        } else {
+          req.user = undefined;
+          next();
+        }
+      });
+    });
+  } else {
+    req.user = undefined;
+    next();
+  }
+};
+
+app.get('/', verifyToken, (req, res) => {
+  if (req.user) {
+    res.render('welcome', { email: req.user });
+  } else {
+    res.render('new');
+  }
 });
 
 app.get('/signup', function(req, res){
@@ -66,8 +92,14 @@ app.post('/login', function(req, res){
     } else {
 
       if (bcrypt.compareSync(given_password, password)) {
-        res.cookie('_mau_mau_auth_JWT', 'auth_information');
-        res.render('welcome', { email: email });
+        let authToken = jwt.sign({
+          email: email
+        }, process.env.JWT_SECRET, {
+          expiresIn: 86400 // 24 hours
+        });
+
+        res.cookie('_mau_mau_auth_JWT', authToken);
+        res.redirect('/auth');
       } else {
         res.render('error');
       }
