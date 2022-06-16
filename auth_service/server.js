@@ -2,7 +2,6 @@
 
 const express = require('express');
 const Redis = require("ioredis");
-const cors = require('cors');
 const path = require('path');
 
 // Connect to Redis with REDIS_URL from ENV
@@ -15,8 +14,6 @@ const HOST = process.env.BINDING;
 // App
 var app = module.exports = express();
 
-// Enable CORS for localhost origins
-app.use(cors({ origin: /localhost/, credentials: true }));
 
 // Read form data
 app.use(express.urlencoded({ extended: false }));
