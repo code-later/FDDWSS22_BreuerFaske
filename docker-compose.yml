@@ -30,7 +30,6 @@ services:
     environment:
       EDITOR: vim
       RAILS_ENV: development
-      RAILS_RELATIVE_URL_ROOT: /game
       DATABASE_URL: ${DATABASE_URL:-postgres://postgres:secretsecretsecret@game-service-db/game_service}
       TEST_DATABASE_URL: ${TEST_DATABASE_URL:-postgres://postgres:secretsecretsecret@game-service-db/game_service_test}
     stdin_open: true
