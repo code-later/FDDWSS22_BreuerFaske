@@ -33,6 +33,8 @@ module App
 
     config.relative_url_root = "/game"
 
+    config.x.jwt_auth_secret = ENV.fetch("JWT_SECRET")
+
     # Don't generate system test files.
     config.generators.system_tests = nil
   end

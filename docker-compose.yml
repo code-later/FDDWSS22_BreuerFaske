@@ -30,6 +30,7 @@ services:
     environment:
       EDITOR: vim
       RAILS_ENV: development
+      JWT_SECRET: aen7ieCahc9eC9aequ7eib4ogei4Afei
       DATABASE_URL: ${DATABASE_URL:-postgres://postgres:secretsecretsecret@game-service-db/game_service}
       TEST_DATABASE_URL: ${TEST_DATABASE_URL:-postgres://postgres:secretsecretsecret@game-service-db/game_service_test}
     stdin_open: true
