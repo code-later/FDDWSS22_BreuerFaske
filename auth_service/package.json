@@ -5,7 +5,8 @@
   "author": "Dirk Breuer <mail@breuer.io>",
   "main": "server.js",
   "scripts": {
-    "start": "nodemon server.js"
+    "start": "nodemon server.js",
+    "debug": "nodemon --inspect=0.0.0.0 server.js"
   },
   "dependencies": {
     "bcrypt": "^5.0.1",

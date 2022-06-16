@@ -68,6 +68,10 @@ services:
       context: auth_service
       args:
         service: web
+    # # Remote debugging port
+    # command: ["npm", "run", "debug"]
+    # ports:
+    #   - "9229:9229"
     volumes:
       - ./auth_service:/app
       - node_modules:/app/node_modules
