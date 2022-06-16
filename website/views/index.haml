@@ -1,0 +1,33 @@
+!!!
+%html{ lang: :de }
+  %head
+    %title= "Mau-Mau Online"
+
+  :css
+    html {
+      max-width:70ch;
+      padding:2ch;
+      margin:auto;
+      color:#333;
+      font-size:1.2em;
+      font-family:sans-serif;
+    }
+
+  %script{ type: "text/javascript", src: "https://cdn.skypack.dev/@hotwired/turbo", defer: true, type: "module" }
+  %script{ type: "text/javascript", src: "application.js", defer: true, type: "module" }
+
+  %body
+    %h1= "Mau-Mau Online"
+
+    :markdown
+      Es soll das Kartenspiel [_Mau-Mau_](https://de.wikipedia.org/wiki/Mau-Mau_(Kartenspiel)) als rundenbasierte Web-Anwendung für 2-5
+      Spielende umgesetzt werden. Der Fokus dabei liegt auf einem verteilten System
+      mit Event-basierter Kommunikation. Neben den eigentlichen Spielregeln, die im
+      Anschluss beschrieben sind, soll die Anwendung über ein einfaches
+      Nutzer:innen-Modell verfügen und den unberechtigten Zugriff verhindern.
+
+      Nutzer:innen können an beliebig vielen unterschiedlichen Spielen gleichzeitig
+      teilnehmen.
+
+    %embed-link
+      %a{ title: "Sign up", href: "http://localhost/auth" } Zum Sign Up

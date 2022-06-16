@@ -1,0 +1,52 @@
+version: "3.9"
+services:
+  reverse_proxy:
+    image: nginx:latest
+    depends_on:
+      - website
+      - auth_service
+    ports:
+      - 80:80
+    volumes:
+      - ./_config/reverse_proxy.conf:/etc/nginx/conf.d/default.conf
+
+  website:
+    environment:
+      EDITOR: vim
+      RACK_ENV: development
+    stdin_open: true
+    tty: true
+    user: "${USER_MAPPING:-app:app}"
+    build:
+      context: website
+      args:
+        service: web
+    volumes:
+      - ./website:/app
+      - bundle:/bundle
+
+  auth_service:
+    environment:
+      REDIS_URL: redis://:supersecretpassword@auth_service_db:6379
+    stdin_open: true
+    tty: true
+    user: "${USER_MAPPING:-app:app}"
+    depends_on:
+      - auth_service_db
+    build:
+      context: auth_service
+      args:
+        service: web
+    volumes:
+      - ./auth_service:/app
+      - node_modules:/app/node_modules
+
+  auth_service_db:
+    image: redis
+    command: ["redis-server", "/etc/redis/redis.conf"]
+    volumes:
+      - ./_config/auth_service.redis.conf:/etc/redis/redis.conf
+
+volumes:
+  bundle:
+  node_modules:

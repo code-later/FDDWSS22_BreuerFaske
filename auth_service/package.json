@@ -1,0 +1,16 @@
+{
+  "name": "auth_service",
+  "version": "1.0.0",
+  "description": "Simple authentication service with NodeJS/express to showcase Docker setup.",
+  "author": "Dirk Breuer <mail@breuer.io>",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "ejs": "3.1.8",
+    "express": "^4.18.1",
+    "ioredis": "^5.0.6"
+  }
+}
