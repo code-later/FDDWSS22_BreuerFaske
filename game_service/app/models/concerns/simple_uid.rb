@@ -9,7 +9,7 @@ module SimpleUid
     end
 
     def by_uid!(uid_with_slug)
-      find_by!(slug: uid_with_slug)
+      find_by!(uid: uid_with_slug)
     end
   end
 
@@ -24,6 +24,6 @@ module SimpleUid
   end
 
   def to_param
-    slug
+    uid
   end
 end

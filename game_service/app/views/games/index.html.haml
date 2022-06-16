@@ -1,0 +1,20 @@
+%h1 Listing games
+
+%table
+  %thead
+    %tr
+      %th UID
+      %th Started
+      %th Players
+
+  %tbody
+    - @games.each do |game|
+      %tr
+        %td= link_to game.uid, game
+        %td= l(game.created_at, format: :short)
+        %td= game.players.join(", ")
+
+
+%br
+
+= link_to 'New Game', new_game_path
