@@ -56,6 +56,36 @@ services:
     ports:
       - "5432:5432"
 
+  notification_service:
+    environment:
+      EDITOR: vim
+      RAILS_ENV: development
+      JWT_SECRET: aen7ieCahc9eC9aequ7eib4ogei4Afei
+      DATABASE_URL: ${DATABASE_URL:-postgres://postgres:secretsecretsecret@notification-service-db/notification_service}
+      TEST_DATABASE_URL: ${TEST_DATABASE_URL:-postgres://postgres:secretsecretsecret@notification-service-db/notification_service_test}
+    stdin_open: true
+    tty: true
+    depends_on:
+    - notification-service-db
+    user: "${USER_MAPPING:-app:app}"
+    build:
+      context: notification_service
+      args:
+        service: web
+    volumes:
+      - ./notification_service:/app
+      - bundle_notification_service:/bundle
+
+  # Alias required since underscores are not allowed in DATABASE_URL. See: https://stackoverflow.com/a/64344976
+  notification-service-db:
+    environment:
+      POSTGRES_PASSWORD: secretsecretsecret
+    image: postgres:latest
+    volumes:
+      - notification_service_db:/var/lib/postgresql/data
+    ports:
+      - "5433:5432"
+
   auth_service:
     environment:
       REDIS_URL: redis://:supersecretpassword@auth_service_db:6379
@@ -89,6 +119,8 @@ services:
 volumes:
   bundle_website:
   bundle_game_service:
+  bundle_notification_service:
   game_service_db:
+  notification_service_db:
   auth_service_db:
   node_modules:

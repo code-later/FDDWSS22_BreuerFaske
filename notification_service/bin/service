@@ -1,0 +1,8 @@
+#!/usr/bin/env sh
+
+case $SERVICE in
+  web)
+      rm -rf /tmp/game_service.pid
+      rails server --pid /tmp/game_service.pid
+    ;;
+esac
