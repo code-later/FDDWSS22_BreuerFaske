@@ -3,6 +3,7 @@
 const express = require('express');
 const Redis = require("ioredis");
 const path = require('path');
+const bcrypt = require("bcrypt");
 
 // Connect to Redis with REDIS_URL from ENV
 const redis = new Redis(process.env.REDIS_URL);
@@ -14,8 +15,10 @@ const HOST = process.env.BINDING;
 // App
 var app = module.exports = express();
 
+// Parse requests of content-type - application/json
+app.use(express.json());
 
-// Read form data
+// Parse requests of content-type - application/x-www-form-urlencoded
 app.use(express.urlencoded({ extended: false }));
 
 // Config
@@ -34,9 +37,15 @@ app.post('/signup', function(req, res){
   const email = req.body.email;
   const password = req.body.password;
 
-  redis.set(email, password); // NEVER store plain text passwords!
+  redis.exists(email, (err, result) => {
+    if (err || result === 1) {
+      res.render('error');
+    } else {
+      redis.set(email, bcrypt.hashSync(password, 8));
 
-  res.redirect('/auth/login');
+      res.redirect('/auth/login');
+    }
+  });
 });
 
 app.get('/login', function(req, res){
@@ -45,17 +54,17 @@ app.get('/login', function(req, res){
 
 app.post('/login', function(req, res){
   const email = req.body.email;
-  const password = req.body.password;
+  const given_password = req.body.password;
 
-  redis.get(email, (err, result) => {
+  redis.get(email, (err, password) => {
     if (err) {
-      res.render('failed');
+      res.render('error');
     } else {
 
-      if (result === password) {
+      if (bcrypt.compareSync(given_password, password)) {
         res.render('welcome', { email: email });
       } else {
-        res.render('failed');
+        res.render('error');
       }
     }
   });
