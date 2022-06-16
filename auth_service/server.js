@@ -6,6 +6,7 @@ const path = require('path');
 const bcrypt = require("bcrypt");
 const cookieParser = require('cookie-parser');
 const jwt = require("jsonwebtoken");
+const events = require('./events.js');
 
 // Connect to Redis with REDIS_URL from ENV
 const redis = new Redis(process.env.REDIS_URL);
@@ -51,6 +52,12 @@ const verifyToken = (req, res, next) => {
   }
 };
 
+app.get('/events', async (req, res) => {
+  res.setHeader('content-type', 'application/atom+xml');
+  const feed = await events.generateFeed();
+  res.send(feed);
+});
+
 app.get('/', verifyToken, (req, res) => {
   if (req.user) {
     res.render('welcome', { email: req.user });
@@ -72,6 +79,7 @@ app.post('/signup', function(req, res){
       res.render('error');
     } else {
       redis.set(email, bcrypt.hashSync(password, 8));
+      events.UserSignedUp(email);
 
       res.redirect('/auth/login');
     }
@@ -84,14 +92,14 @@ app.get('/login', function(req, res){
 
 app.post('/login', function(req, res){
   const email = req.body.email;
-  const given_password = req.body.password;
+  const givenPassword = req.body.password;
 
   redis.get(email, (err, password) => {
     if (err) {
       res.render('error');
     } else {
 
-      if (bcrypt.compareSync(given_password, password)) {
+      if (bcrypt.compareSync(givenPassword, password)) {
         let authToken = jwt.sign({
           email: email
         }, process.env.JWT_SECRET, {
