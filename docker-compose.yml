@@ -75,11 +75,15 @@ services:
   auth_service_db:
     image: redis
     command: ["redis-server", "/etc/redis/redis.conf"]
+    ports:
+    - "6379:6379"
     volumes:
       - ./_config/auth_service.redis.conf:/etc/redis/redis.conf
+      - auth_service_db:/data
 
 volumes:
   bundle_website:
   bundle_game_service:
   game_service_db:
+  auth_service_db:
   node_modules:
