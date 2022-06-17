@@ -125,6 +125,12 @@ services:
       - ./_config/auth_service.redis.conf:/etc/redis/redis.conf
       - auth_service_db:/data
 
+  mailhog:
+    image: mailhog/mailhog
+    ports:
+      - "1025:1025"
+      - "8025:8025"
+
 volumes:
   bundle_website:
   bundle_game_service:
