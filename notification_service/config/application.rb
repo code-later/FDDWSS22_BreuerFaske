@@ -31,9 +31,10 @@ module App
     # config.time_zone = "Central Time (US & Canada)"
     # config.eager_load_paths << Rails.root.join("extras")
 
-    config.active_record.schema_format = :sql
-
     config.x.event_feeds = ENV.fetch("EVENT_FEEDS", "").split(",")
+
+    # Don't send mails in-process!
+    config.active_job.queue_adapter = :async
 
     # Don't generate system test files.
     config.generators.system_tests = nil
