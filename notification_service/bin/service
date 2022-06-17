@@ -5,4 +5,7 @@ case $SERVICE in
       rm -rf /tmp/game_service.pid
       rails server --pid /tmp/game_service.pid
     ;;
+  consume)
+      rails events:consume
+      ;;
 esac

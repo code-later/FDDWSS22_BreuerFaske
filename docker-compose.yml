@@ -57,12 +57,14 @@ services:
       - "5432:5432"
 
   notification_service:
+    &notification-service-common
     environment:
       EDITOR: vim
       RAILS_ENV: development
       JWT_SECRET: aen7ieCahc9eC9aequ7eib4ogei4Afei
       DATABASE_URL: ${DATABASE_URL:-postgres://postgres:secretsecretsecret@notification-service-db/notification_service}
       TEST_DATABASE_URL: ${TEST_DATABASE_URL:-postgres://postgres:secretsecretsecret@notification-service-db/notification_service_test}
+      EVENT_FEEDS: http://auth_service:8080/events
     stdin_open: true
     tty: true
     depends_on:
@@ -75,6 +77,13 @@ services:
     volumes:
       - ./notification_service:/app
       - bundle_notification_service:/bundle
+
+  notification_service_consumer:
+    <<: *notification-service-common
+    build:
+      context: notification_service
+      args:
+        service: consume
 
   # Alias required since underscores are not allowed in DATABASE_URL. See: https://stackoverflow.com/a/64344976
   notification-service-db:

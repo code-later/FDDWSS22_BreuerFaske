@@ -33,6 +33,8 @@ module App
 
     config.active_record.schema_format = :sql
 
+    config.x.event_feeds = ENV.fetch("EVENT_FEEDS", "").split(",")
+
     # Don't generate system test files.
     config.generators.system_tests = nil
   end
