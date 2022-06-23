@@ -2,8 +2,11 @@
 
 const express = require('express');
 const Redis = require("ioredis");
-const cors = require('cors');
 const path = require('path');
+const bcrypt = require("bcrypt");
+const cookieParser = require('cookie-parser');
+const jwt = require("jsonwebtoken");
+const events = require('./events.js');
 
 // Connect to Redis with REDIS_URL from ENV
 const redis = new Redis(process.env.REDIS_URL);
@@ -15,18 +18,52 @@ const HOST = process.env.BINDING;
 // App
 var app = module.exports = express();
 
-// Enable CORS for localhost origins
-app.use(cors({ origin: /localhost/, credentials: true }));
+// Enable usage of Cookies
+app.use(cookieParser());
 
-// Read form data
+// Parse requests of content-type - application/json
+app.use(express.json());
+
+// Parse requests of content-type - application/x-www-form-urlencoded
 app.use(express.urlencoded({ extended: false }));
 
 // Config
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
-app.get('/', (req, res) => {
-  res.redirect('/auth/signup');
+const verifyToken = (req, res, next) => {
+  if (req.cookies && req.cookies._mau_mau_auth_JWT) {
+    jwt.verify(req.cookies._mau_mau_auth_JWT, process.env.JWT_SECRET, function (err, decode) {
+      if (err) req.user = undefined;
+
+      redis.exists(decode.email, (err, result) => {
+        if (err || result === 1) {
+          req.user = decode.email;
+          next();
+        } else {
+          req.user = undefined;
+          next();
+        }
+      });
+    });
+  } else {
+    req.user = undefined;
+    next();
+  }
+};
+
+app.get('/events', async (req, res) => {
+  res.setHeader('content-type', 'application/atom+xml');
+  const feed = await events.generateFeed();
+  res.send(feed);
+});
+
+app.get('/', verifyToken, (req, res) => {
+  if (req.user) {
+    res.render('welcome', { email: req.user });
+  } else {
+    res.render('new');
+  }
 });
 
 app.get('/signup', function(req, res){
@@ -37,9 +74,16 @@ app.post('/signup', function(req, res){
   const email = req.body.email;
   const password = req.body.password;
 
-  redis.set(email, password); // NEVER store plain text passwords!
+  redis.exists(email, (err, result) => {
+    if (err || result === 1) {
+      res.render('error');
+    } else {
+      redis.set(email, bcrypt.hashSync(password, 8));
+      events.UserSignedUp(email);
 
-  res.redirect('/auth/login');
+      res.redirect('/auth/login');
+    }
+  });
 });
 
 app.get('/login', function(req, res){
@@ -48,17 +92,24 @@ app.get('/login', function(req, res){
 
 app.post('/login', function(req, res){
   const email = req.body.email;
-  const password = req.body.password;
+  const givenPassword = req.body.password;
 
-  redis.get(email, (err, result) => {
+  redis.get(email, (err, password) => {
     if (err) {
-      res.render('failed');
+      res.render('error');
     } else {
 
-      if (result === password) {
-        res.render('welcome', { email: email });
+      if (bcrypt.compareSync(givenPassword, password)) {
+        let authToken = jwt.sign({
+          email: email
+        }, process.env.JWT_SECRET, {
+          expiresIn: 86400 // 24 hours
+        });
+
+        res.cookie('_mau_mau_auth_JWT', authToken);
+        res.redirect('/auth');
       } else {
-        res.render('failed');
+        res.render('error');
       }
     }
   });
